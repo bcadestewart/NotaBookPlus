@@ -3,59 +3,44 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+const authRoutes = require("./routes/auth");
+const Note = require("./models/Note"); // Import the Note model
+
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Connect to MongoDB
+// **Connect to MongoDB**
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log("MongoDB Connection Error:", err));
+}).then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
-// Define Note Schema
-const NoteSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-});
+// **Authentication Routes**
+app.use("/auth", authRoutes);
 
-const Note = mongoose.model("Note", NoteSchema);
-
-// API Routes
-app.get("/notes", async (req, res) => {
-  try {
-    const notes = await Note.find();
-    res.json(notes);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
+// **Create a Note**
 app.post("/notes", async (req, res) => {
   try {
     const newNote = new Note(req.body);
     await newNote.save();
     res.json(newNote);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating note", error });
   }
 });
 
-app.put("/notes/:id", async (req, res) => {
+// **Get All Notes**
+app.get("/notes", async (req, res) => {
   try {
-    await Note.findByIdAndUpdate(req.params.id, req.body);
-    res.send("Note updated");
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const notes = await Note.find();
+    res.json(notes);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching notes", error });
   }
 });
 
-// Root Route
-app.get("/", (req, res) => {
-  res.send("Server is running...");
-});
-
+// **Start the Server**
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

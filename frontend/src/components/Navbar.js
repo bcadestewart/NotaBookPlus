@@ -12,9 +12,14 @@ export default function Navbar({ showLogin }) {
           Settings
         </Link>
         {showLogin && (
-          <Link to="/login" className="ml-4 px-4 py-2 bg-green-500 rounded hover:bg-green-700 transition">
-            Login
-          </Link>
+          <>
+            <Link to="/login" className="ml-4 px-4 py-2 bg-green-500 rounded hover:bg-green-700 transition">
+              Login
+            </Link>
+            <Link to="/register" className="ml-4 px-4 py-2 bg-yellow-500 rounded hover:bg-yellow-700 transition">
+              Register
+            </Link>
+          </>
         )}
       </div>
     </nav>
