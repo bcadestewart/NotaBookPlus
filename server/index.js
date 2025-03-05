@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const authRoutes = require("./routes/auth");
-const Note = require("./models/Note"); // Import the Note model
+const Note = require("./models/Note");  // ✅ Correct relative path
 
 const app = express();
 app.use(express.json());
