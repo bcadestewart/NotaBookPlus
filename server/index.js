@@ -3,8 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const authRoutes = require("./routes/auth");
-const Note = require("./models/Note");  // ✅ Correct relative path
+const Note = require("./models/Note"); // ✅ Ensure this model exists
 
 const app = express();
 app.use(express.json());
@@ -17,9 +16,6 @@ mongoose.connect(process.env.MONGO_URI, {
 }).then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
-// **Authentication Routes**
-app.use("/auth", authRoutes);
-
 // **Create a Note**
 app.post("/notes", async (req, res) => {
   try {
@@ -27,7 +23,7 @@ app.post("/notes", async (req, res) => {
     await newNote.save();
     res.json(newNote);
   } catch (error) {
-    res.status(500).json({ message: "Error creating note", error });
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -37,7 +33,27 @@ app.get("/notes", async (req, res) => {
     const notes = await Note.find();
     res.json(notes);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching notes", error });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// **Update a Note**
+app.put("/notes/:id", async (req, res) => {
+  try {
+    const updatedNote = await Note.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedNote);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// **Delete a Note**
+app.delete("/notes/:id", async (req, res) => {
+  try {
+    await Note.findByIdAndDelete(req.params.id);
+    res.json({ message: "Note deleted" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
