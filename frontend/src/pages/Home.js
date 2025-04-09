@@ -1,56 +1,44 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import NoteViewer from "../components/NoteViewer";
-
-const API_URL = "http://localhost:5000/notes"; // ✅ Backend API URL
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
 
-  // ✅ Load notes from MongoDB when the app starts
   useEffect(() => {
-    axios.get(API_URL)
-      .then((response) => {
-        setNotes(response.data);
-        if (response.data.length > 0) setSelectedNote(response.data[0]);
-      })
-      .catch((error) => console.error("Error fetching notes:", error));
+    const stored = localStorage.getItem("notes");
+    const parsedNotes = stored ? JSON.parse(stored) : [];
+    setNotes(parsedNotes);
+    if (parsedNotes.length > 0) setSelectedNote(parsedNotes[0]);
   }, []);
 
-  // ✅ Add a new note (saved to MongoDB)
+  useEffect(() => {
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
+
   const addNote = () => {
-    const newNote = { title: "New Note", content: "" };
-    axios.post(API_URL, newNote)
-      .then((response) => {
-        setNotes([...notes, response.data]); // ✅ Update local state
-        setSelectedNote(response.data);  // ✅ Auto-select new note
-      })
-      .catch((error) => console.error("Error adding note:", error));
+    const newNote = {
+      id: Date.now(),
+      title: "New Note",
+      content: "",
+    };
+    const updated = [...notes, newNote];
+    setNotes(updated);
+    setSelectedNote(newNote);
   };
 
-  // ✅ Update note content in MongoDB
-  const updateNoteContent = (id, newContent) => {
-    axios.put(`${API_URL}/${id}`, { content: newContent })
-      .then(() => {
-        const updatedNotes = notes.map((note) =>
-          note._id === id ? { ...note, content: newContent } : note
-        );
-        setNotes(updatedNotes);
-      })
-      .catch((error) => console.error("Error updating note:", error));
+  const updateNoteContent = (id, content) => {
+    const updated = notes.map((note) =>
+      note.id === id ? { ...note, content } : note
+    );
+    setNotes(updated);
   };
 
-  // ✅ Delete a note from MongoDB
   const deleteNote = (id) => {
-    axios.delete(`${API_URL}/${id}`)
-      .then(() => {
-        const updatedNotes = notes.filter((note) => note._id !== id);
-        setNotes(updatedNotes);
-        setSelectedNote(updatedNotes.length > 0 ? updatedNotes[0] : null);
-      })
-      .catch((error) => console.error("Error deleting note:", error));
+    const updated = notes.filter((note) => note.id !== id);
+    setNotes(updated);
+    setSelectedNote(updated.length > 0 ? updated[0] : null);
   };
 
   return (

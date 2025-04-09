@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import Settings from "./pages/Settings";
 import Navbar from "./components/Navbar";
 
-export default function App() {
+function App() {
   return (
     <Router>
       <div className="flex flex-col h-screen">
@@ -17,13 +17,8 @@ export default function App() {
           <Route path="/register" element={<Register />} />
         </Routes>
       </div>
-      <button
-        onClick={() => alert("Add Note Clicked")}
-        className="absolute bottom-4 right-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-700 hover:scale-105 transition-transform"
-      >
-        Add Note
-      </button>
     </Router>
   );
 }
 
+export default App;

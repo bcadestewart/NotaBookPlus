@@ -16,20 +16,20 @@ export default function NoteViewer({ note, onUpdate, onDelete }) {
           value={content}
           onChange={(e) => {
             setContent(e.target.value);
-            onUpdate(note._id, e.target.value);  // ✅ Uses MongoDB _id
+            onUpdate(note.id, e.target.value);  // ✅ now uses note.id
           }}
           placeholder="Start typing your note here..."
         />
       </div>
       <div className="mt-4">
         <button
-          onClick={() => onUpdate(note._id, content)}
+          onClick={() => onUpdate(note.id, content)}
           className="p-2 bg-green-500 text-white rounded hover:bg-green-700 hover:scale-105 transition-transform"
         >
           Save Note
         </button>
         <button
-          onClick={() => onDelete(note._id)}
+          onClick={() => onDelete(note.id)}
           className="ml-4 p-2 bg-red-500 text-white rounded hover:bg-red-700 hover:scale-105 transition-transform"
         >
           Delete Note

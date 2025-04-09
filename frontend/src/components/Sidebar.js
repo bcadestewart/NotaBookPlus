@@ -4,13 +4,13 @@ function Sidebar({ notes, onSelect, selectedNote }) {
       <h2 className="text-xl font-semibold mb-4">Your Notes</h2>
       {notes.map((note) => (
         <button
-          key={note._id}
+          key={note.id}
           className={`w-full mb-2 text-left p-2 rounded ${
-            selectedNote && selectedNote._id === note._id ? "bg-gray-300" : "hover:bg-gray-200"
+            selectedNote && selectedNote.id === note.id ? "bg-gray-300" : "hover:bg-gray-200"
           }`}
           onClick={() => onSelect(note)}
         >
-          {note.title}
+          {note.title || "Untitled Note"}
         </button>
       ))}
     </div>
