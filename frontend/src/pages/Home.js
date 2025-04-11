@@ -5,6 +5,7 @@ import NoteViewer from "../components/NoteViewer";
 export default function Home() {
   const [notes, setNotes] = useState([]);
   const [selectedNote, setSelectedNote] = useState(null);
+  const [content, setContent] = useState("");
 
   useEffect(() => {
     const stored = localStorage.getItem("notes");
@@ -12,6 +13,10 @@ export default function Home() {
     setNotes(parsedNotes);
     if (parsedNotes.length > 0) setSelectedNote(parsedNotes[0]);
   }, []);
+
+  useEffect(() => {
+    if (selectedNote) setContent(selectedNote.content);
+  }, [selectedNote]);
 
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
@@ -36,27 +41,26 @@ export default function Home() {
   };
 
   const deleteNote = (id) => {
-    const updated = notes.filter((note) => note.id !== id);
-    setNotes(updated);
-    setSelectedNote(updated.length > 0 ? updated[0] : null);
+    const filtered = notes.filter((note) => note.id !== id);
+    setNotes(filtered);
+    if (selectedNote?.id === id) setSelectedNote(null);
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar notes={notes} onSelect={setSelectedNote} selectedNote={selectedNote} />
-      {selectedNote ? (
-        <NoteViewer note={selectedNote} onUpdate={updateNoteContent} onDelete={deleteNote} />
-      ) : (
-        <div className="flex-1 flex items-center justify-center text-gray-500">
-          No note selected
-        </div>
-      )}
-      <button
-        onClick={addNote}
-        className="absolute bottom-4 right-4 p-2 bg-blue-500 text-white rounded hover:bg-blue-700 hover:scale-105 transition-transform"
-      >
-        Add Note
-      </button>
+    <div className="flex h-full bg-gray-800 text-white">
+	<Sidebar
+	  notes={notes}
+	  onAddNote={addNote}
+	  onSelect={setSelectedNote}
+	  selectedId={selectedNote?.id}
+	/>
+      <NoteViewer
+        note={selectedNote}
+        content={content}
+        setContent={setContent}
+        onUpdate={updateNoteContent}
+        onDelete={deleteNote}
+      />
     </div>
   );
 }
