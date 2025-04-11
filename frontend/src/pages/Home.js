@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import NoteViewer from "../components/NoteViewer";
+import TranscriptionButton from "../components/TranscriptionButton";
 import {
   Box,
   Button,
@@ -9,6 +10,7 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Stack,
 } from "@mui/material";
 
 export default function Home() {
@@ -72,10 +74,14 @@ export default function Home() {
     }
   };
 
+  const handleSummarize = () => {
+    alert("Summarize feature is not implemented yet.");
+  };
+
   const selectedNote = notes.find((note) => note.id === selectedNoteId);
 
   return (
-    <div style={{ display: "flex" }}>
+    <div style={{ display: "flex", width: "100%" }}>
       <Box
         sx={{
           width: 280,
@@ -120,11 +126,17 @@ export default function Home() {
         </List>
       </Box>
 
-      <NoteViewer
-        note={selectedNote}
-        onUpdate={handleUpdateNote}
-        onDelete={handleDeleteNote}
-      />
+      <Box flex={1} display="flex" flexDirection="column">
+        <Stack direction="row" spacing={2} sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
+          <Button variant="outlined" onClick={handleSummarize}>Summarize</Button>
+          <TranscriptionButton onTranscribe={(text) => handleUpdateNote(selectedNoteId, text)} />
+        </Stack>
+        <NoteViewer
+          note={selectedNote}
+          onUpdate={handleUpdateNote}
+          onDelete={handleDeleteNote}
+        />
+      </Box>
     </div>
   );
 }
