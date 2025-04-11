@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import NoteViewer from "../components/NoteViewer";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import TranscriptionButton from "../components/TranscriptionButton";
 import {
   Box,
@@ -19,7 +20,6 @@ export default function Home() {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
-  // Load notes from localStorage
   useEffect(() => {
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
     setNotes(savedNotes);
@@ -28,7 +28,6 @@ export default function Home() {
     }
   }, []);
 
-  // Save notes to localStorage
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
@@ -79,6 +78,17 @@ export default function Home() {
   };
 
   const selectedNote = notes.find((note) => note.id === selectedNoteId);
+
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "code-block"],
+      ["link"],
+      ["clean"],
+    ],
+  };
 
   return (
     <div style={{ display: "flex", width: "100%" }}>
@@ -131,11 +141,24 @@ export default function Home() {
           <Button variant="outlined" onClick={handleSummarize}>Summarize</Button>
           <TranscriptionButton onTranscribe={(text) => handleUpdateNote(selectedNoteId, text)} />
         </Stack>
-        <NoteViewer
-          note={selectedNote}
-          onUpdate={handleUpdateNote}
-          onDelete={handleDeleteNote}
-        />
+        {selectedNote && (
+          <Box p={2}>
+            <ReactQuill
+              theme="snow"
+              value={selectedNote.content}
+              onChange={(value) => handleUpdateNote(selectedNote.id, value)}
+              modules={quillModules}
+            />
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleDeleteNote(selectedNote.id)}
+              sx={{ mt: 2 }}
+            >
+              Delete Note
+            </Button>
+          </Box>
+        )}
       </Box>
     </div>
   );
