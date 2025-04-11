@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
 
 export default function NoteViewer({ note, onUpdate, onDelete }) {
-  const [content, setContent] = useState(note.content);
+  const [content, setContent] = useState("");
 
   useEffect(() => {
-    setContent(note.content);
+    if (note) {
+      setContent(note.content || "");
+    }
   }, [note]);
+
+  if (!note) {
+    return (
+      <div className="flex-1 p-6 text-center text-gray-500">
+        No note selected
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 p-6">
@@ -16,7 +26,7 @@ export default function NoteViewer({ note, onUpdate, onDelete }) {
           value={content}
           onChange={(e) => {
             setContent(e.target.value);
-            onUpdate(note.id, e.target.value);  // ✅ now uses note.id
+            onUpdate(note.id, e.target.value);
           }}
           placeholder="Start typing your note here..."
         />
