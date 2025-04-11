@@ -4,20 +4,36 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Settings from "./pages/Settings";
 import Navbar from "./components/Navbar";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { useState } from "react";
 
 function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+    },
+  });
+
   return (
-    <Router>
-      <div className="flex flex-col h-screen">
-        <Navbar showLogin={true} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/register" element={<Register />} />
-        </Routes>
-      </div>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <div className="flex flex-col h-screen">
+          <Navbar showLogin={true} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/settings"
+              element={<Settings darkMode={darkMode} setDarkMode={setDarkMode} />}
+            />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 }
 
