@@ -21,6 +21,32 @@ An intelligent note-taking app with support for audio transcription, summarizati
 
 > You must use **Python 3.10.x** — newer versions like 3.12 are **NOT supported** due to `whisper` and `torch` compatibility issues.
 
+- **Node.js** and **npm**
+- **FFmpeg** (required for audio recording/transcription)
+
+#### 🛠️ FFmpeg Setup
+
+**Windows:**
+1. Download from [ffmpeg.org](https://ffmpeg.org/download.html)
+2. Extract (e.g., to `C:\FFmpeg`)
+3. Add `C:\FFmpeg\bin` to System `PATH`
+4. Restart terminal
+
+**macOS:**
+```bash
+brew install ffmpeg
+```
+
+**Linux (Debian/Ubuntu):**
+```bash
+sudo apt install ffmpeg
+```
+
+Test with:
+```bash
+ffmpeg -version
+```
+
 ---
 
 ## 🧪 Backend Setup (FastAPI)
