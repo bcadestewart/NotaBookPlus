@@ -9,12 +9,19 @@ import { useState } from "react";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
+      ...(darkMode && {
+        background: {
+          default: "#121212",       // Main page background
+          paper: "#2c2c2c",         // Sidebar & cards (your target)
+        },
+      }),
     },
   });
+  
+  
 
   return (
     <ThemeProvider theme={theme}>

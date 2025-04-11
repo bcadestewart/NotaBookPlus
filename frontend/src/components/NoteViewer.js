@@ -1,4 +1,12 @@
 import { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Stack,
+  Paper,
+} from "@mui/material";
 
 export default function NoteViewer({ note, onUpdate, onDelete }) {
   const [content, setContent] = useState("");
@@ -11,18 +19,25 @@ export default function NoteViewer({ note, onUpdate, onDelete }) {
 
   if (!note) {
     return (
-      <div className="flex-1 p-6 text-center text-gray-500">
-        No note selected
-      </div>
+      <Box flex={1} display="flex" justifyContent="center" alignItems="center">
+        <Typography variant="body1" color="textSecondary">
+          No note selected
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="flex-1 p-6">
-      <div className="border rounded-lg p-4 bg-white shadow">
-        <h2 className="text-2xl font-bold mb-2">{note.title}</h2>
-        <textarea
-          className="w-full h-64 border p-2 rounded mt-2"
+    <Box flex={1} p={4}>
+      <Paper sx={{ p: 3 }}>
+        <Typography variant="h5" gutterBottom>
+          {note.title}
+        </Typography>
+        <TextField
+          fullWidth
+          multiline
+          rows={10}
+          variant="outlined"
           value={content}
           onChange={(e) => {
             setContent(e.target.value);
@@ -30,21 +45,23 @@ export default function NoteViewer({ note, onUpdate, onDelete }) {
           }}
           placeholder="Start typing your note here..."
         />
-      </div>
-      <div className="mt-4">
-        <button
-          onClick={() => onUpdate(note.id, content)}
-          className="p-2 bg-green-500 text-white rounded hover:bg-green-700 hover:scale-105 transition-transform"
-        >
-          Save Note
-        </button>
-        <button
-          onClick={() => onDelete(note.id)}
-          className="ml-4 p-2 bg-red-500 text-white rounded hover:bg-red-700 hover:scale-105 transition-transform"
-        >
-          Delete Note
-        </button>
-      </div>
-    </div>
+        <Stack direction="row" spacing={2} mt={2}>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => onUpdate(note.id, content)}
+          >
+            Save Note
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => onDelete(note.id)}
+          >
+            Delete Note
+          </Button>
+        </Stack>
+      </Paper>
+    </Box>
   );
 }

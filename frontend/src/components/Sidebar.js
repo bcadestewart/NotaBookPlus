@@ -1,29 +1,53 @@
-// src/components/Sidebar.js
-import React from 'react';
+import {
+  Box,
+  Button,
+  Divider,
+  List,
+  ListItemButton,
+  ListItemText,
+  Typography,
+  useTheme,
+} from "@mui/material";
 
-const Sidebar = ({ notes, onSelectNote, onAddNote }) => {
+export default function Sidebar({ notes, onSelectNote, onAddNote }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
   return (
-    <div className="w-64 bg-gray-100 h-full p-4">
-      <h2 className="font-semibold mb-4">Your Notes</h2>
-      <button
+    <Box
+      sx={{
+        width: 280,
+        height: "100vh",
+        backgroundColor: isDark ? "#2e2e2e" : "#ffffff", // ✅ hard switch based on mode
+        color: isDark ? "#ffffff" : "#000000",            // ✅ ensure text is readable
+        display: "flex",
+        flexDirection: "column",
+        p: 2,
+        borderRight: `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Typography variant="h6" gutterBottom>
+        Your Notes
+      </Typography>
+
+      <Button
+        variant="contained"
         onClick={onAddNote}
-        className="mb-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+        sx={{ mb: 2 }}
+        fullWidth
       >
         + New Note
-      </button>
-      <ul>
-        {notes.map((note) => (
-          <li
-            key={note.id}
-            onClick={() => onSelectNote(note.id)}
-            className="cursor-pointer py-1 px-2 hover:bg-gray-200 rounded"
-          >
-            {note.title || 'Untitled Note'}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+      </Button>
 
-export default Sidebar;
+      <Divider sx={{ mb: 2 }} />
+
+      <List>
+        {notes.map((note) => (
+          <ListItemButton key={note.id} onClick={() => onSelectNote(note.id)}>
+            <ListItemText primary={note.title || "Untitled Note"} />
+          </ListItemButton>
+        ))}
+      </List>
+    </Box>
+  );
+}
