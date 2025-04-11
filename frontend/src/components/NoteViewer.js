@@ -1,3 +1,5 @@
+import { jsPDF } from "jspdf";
+
 export default function NoteViewer({ note, content, setContent, onUpdate, onDelete }) {
   if (!note) {
     return (
@@ -25,7 +27,7 @@ export default function NoteViewer({ note, content, setContent, onUpdate, onDele
 
       <div className="mt-4 flex gap-4">
         <button
-		  onClick={() => onUpdate(note.id, { ...note, title: note.title, content })}
+          onClick={() => onUpdate(note.id, { ...note, title: note.title, content })}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           Save
@@ -43,7 +45,21 @@ export default function NoteViewer({ note, content, setContent, onUpdate, onDele
           }}
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
         >
-          Export
+          Export TXT
+        </button>
+
+        <button
+          onClick={() => {
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text(note.title || "Untitled Note", 10, 10);
+            doc.setFontSize(12);
+            doc.text(content, 10, 20);
+            doc.save(`${note.title || "note"}.pdf`);
+          }}
+          className="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-700"
+        >
+          Export PDF
         </button>
 
         <button
