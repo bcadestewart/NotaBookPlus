@@ -33,11 +33,14 @@ export default function Home() {
     setSelectedNote(newNote);
   };
 
-  const updateNoteContent = (id, content) => {
+  const updateNoteContent = (id, changes) => {
     const updated = notes.map((note) =>
-      note.id === id ? { ...note, content } : note
+      note.id === id ? { ...note, ...changes } : note
     );
     setNotes(updated);
+    if (selectedNote?.id === id) {
+      setSelectedNote((prev) => ({ ...prev, ...changes }));
+    }
   };
 
   const deleteNote = (id) => {
@@ -48,12 +51,12 @@ export default function Home() {
 
   return (
     <div className="flex h-full bg-gray-800 text-white">
-	<Sidebar
-	  notes={notes}
-	  onAddNote={addNote}
-	  onSelect={setSelectedNote}
-	  selectedId={selectedNote?.id}
-	/>
+      <Sidebar
+        notes={notes}
+        onAddNote={addNote}
+        onSelect={setSelectedNote}
+        selectedNote={selectedNote}
+      />
       <NoteViewer
         note={selectedNote}
         content={content}
