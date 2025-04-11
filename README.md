@@ -24,7 +24,7 @@ An intelligent note-taking app with support for audio transcription, summarizati
 - **Node.js** and **npm**
 - **FFmpeg** (required for audio recording/transcription)
 
-#### 🛠️ FFmpeg Setup
+#### 🛠️ FFmpeg Setup 
 
 **Windows:**
 1. Download from [ffmpeg.org](https://ffmpeg.org/download.html)
