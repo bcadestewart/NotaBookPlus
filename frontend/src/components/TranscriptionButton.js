@@ -1,10 +1,14 @@
-// components/TranscriptionButton.js
 import React, { useRef } from 'react';
 import axios from 'axios';
 
+/*
+* Transcription button that allows users to upload an audio file like .wav, .mp3
+* Sends the file to the backend for transcription and passes the result back to the parent component via the 'onTranscription' callback
+*/
 const TranscriptionButton = ({ onTranscription }) => {
   const fileInputRef = useRef(null);
 
+  // Triggered when a file is selected
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;

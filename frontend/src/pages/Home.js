@@ -1,3 +1,4 @@
+// Core react imports and libraries
 import React, { useState, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -8,29 +9,40 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import { Packer, Document, Paragraph } from 'docx';
 
+//Main Home component handling note editing, AI features, recording, and export
 const Home = () => {
+  // Notes state
   const [notes, setNotes] = useState([{ id: 1, title: 'Untitled Note', content: '' }]);
   const [selectedNoteId, setSelectedNoteId] = useState(1);
   const [editorContent, setEditorContent] = useState('');
+
+  // Recording state
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Export menu toggle
   const [showExportDropdown, setShowExportDropdown] = useState(false);
 
+  // Refs for recording and file input
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const fileInputRef = useRef(null);
 
+  // Get currently selected note
   const selectedNote = notes.find(note => note.id === selectedNoteId);
 
+  // Sync editor content when selected note changes
   useEffect(() => {
     const note = notes.find(note => note.id === selectedNoteId);
     if (note) setEditorContent(note.content);
   }, [selectedNoteId, notes]);
 
+  // Note management
   const createNewNote = () => {
   const newId = Date.now();
   const newNote = { id: newId, title: 'Untitled Note', content: '' };
 
+  // Save current note before switching
   setNotes(prevNotes => {
     const updated = prevNotes.map(note =>
       note.id === selectedNoteId ? { ...note, content: editorContent } : note
@@ -38,7 +50,7 @@ const Home = () => {
     return [...updated, newNote];
   });
 
-  // Use a callback to ensure the note is added before selecting it
+  // Switch to the new note
   setTimeout(() => {
     setSelectedNoteId(newId);
     setEditorContent('');
@@ -71,6 +83,7 @@ const Home = () => {
     else createNewNote();
   };
 
+  // Transcription upload
   const handleTranscriptionUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -90,7 +103,8 @@ const Home = () => {
       alert('Error transcribing.');
     }
   };
-
+  
+  // Summarization button on click
   const handleSummarizeClick = async () => {
     if (!editorContent.trim()) return alert("Note is empty.");
     try {
@@ -114,6 +128,7 @@ const Home = () => {
 
   const triggerFilePicker = () => fileInputRef.current.click();
 
+  // Voice recording with .wav export
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     const mediaRecorder = new MediaRecorder(stream);
@@ -161,6 +176,7 @@ const Home = () => {
     }
   };
 
+  // Export options (.txt, .pdf, .png, .docx)
   const exportAsTxt = () => {
     const blob = new Blob([editorContent], { type: 'text/plain' });
     saveAs(blob, `${selectedNote?.title || "note"}.txt`);
@@ -182,8 +198,10 @@ const Home = () => {
     Packer.toBlob(doc).then(blob => saveAs(blob, `${selectedNote?.title || "note"}.docx`));
   };
 
+  // Render UI features
   return (
     <div className="flex h-screen">
+      {/* Sidebar */}
       <div className="w-1/5 bg-gray-100 p-2">
         <button onClick={createNewNote} className="mb-2 px-2 py-1 bg-blue-500 text-white rounded">+ New Note</button>
         {notes.map(note => (
@@ -197,6 +215,7 @@ const Home = () => {
         ))}
       </div>
 
+      {/* Main Workspace */}
       <div className="flex-1 p-2 flex flex-col">
         {/* Top Buttons */}
         <div className="flex flex-wrap mb-2 space-x-2 items-center">
@@ -219,7 +238,7 @@ const Home = () => {
           <input ref={fileInputRef} type="file" accept="audio/*" onChange={handleTranscriptionUpload} style={{ display: 'none' }} />
         </div>
 
-        {/* Export & Delete */}
+        {/* Export Options & Delete */}
         <div className="flex flex-wrap mb-2 space-x-2">
           <div className="relative">
             <button onClick={() => setShowExportDropdown(prev => !prev)} className="px-4 py-1 bg-purple-400 text-white rounded">Export As</button>

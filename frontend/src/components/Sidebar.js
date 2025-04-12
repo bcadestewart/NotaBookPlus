@@ -1,6 +1,6 @@
-// src/components/Sidebar.js
 import React from 'react';
 
+// Sidebar component displays a vertical panel with a list of all notes and a button to create new ones.
 const Sidebar = ({ notes, onSelectNote, onAddNote }) => {
   return (
     <div className="w-64 bg-gray-100 h-full p-4">
