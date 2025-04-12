@@ -28,14 +28,24 @@ const Home = () => {
   }, [selectedNoteId, notes]);
 
   const createNewNote = () => {
-    const newId = Date.now();
-    const newNote = { id: newId, title: 'Untitled Note', content: '' };
-    setNotes(prev =>
-      [...prev.map(n => n.id === selectedNoteId ? { ...n, content: editorContent } : n), newNote]
+  const newId = Date.now();
+  const newNote = { id: newId, title: 'Untitled Note', content: '' };
+
+  setNotes(prevNotes => {
+    const updated = prevNotes.map(note =>
+      note.id === selectedNoteId ? { ...note, content: editorContent } : note
     );
+    return [...updated, newNote];
+  });
+
+  // Use a callback to ensure the note is added before selecting it
+  setTimeout(() => {
     setSelectedNoteId(newId);
     setEditorContent('');
-  };
+  }, 0);
+};
+
+
 
   const handleNoteSelect = (id) => {
     const updated = notes.map(note => note.id === selectedNoteId ? { ...note, content: editorContent } : note);
