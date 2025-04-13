@@ -271,8 +271,8 @@ export default function Home() {
       <Box flex={1} display="flex" flexDirection="column">
         <Stack direction="row" spacing={2} sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
           <Button variant="outlined" onClick={handleSummarizeClick}>Summarize</Button>
-          <TranscriptionButton onTranscribe={(text) => handleUpdateNote(selectedNoteId, text)} />
-        </Stack>
+          <TranscriptionButton onTranscription={(text) => handleUpdateNote(selectedNoteId, text)} />
+          </Stack>
 
         {selectedNote && (
           <Box p={2}>
