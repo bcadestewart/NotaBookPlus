@@ -1,10 +1,36 @@
-// Settings Component (WIP) - Currently a placeholder for user preferences. Features like dark mode would be added here.
-export default function Settings() {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h2 className="text-2xl font-bold mb-4">Settings</h2>
-        <p className="text-gray-600">Adjust your preferences here.</p>
-      </div>
-    );
-  }
-  
+import React from "react";
+import {
+  Container,
+  Typography,
+  Switch,
+  FormControlLabel,
+  Paper,
+  Box,
+} from "@mui/material";
+
+// Settings page with user preferences like dark mode
+export default function Settings({ darkMode, setDarkMode }) {
+  const handleToggle = () => {
+    setDarkMode(!darkMode);
+  };
+
+  return (
+    <Container maxWidth="sm" sx={{ mt: 5 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Settings
+        </Typography>
+        <Typography variant="body2" gutterBottom>
+          Adjust your preferences below.
+        </Typography>
+
+        <Box mt={3}>
+          <FormControlLabel
+            control={<Switch checked={darkMode} onChange={handleToggle} />}
+            label="Dark Mode"
+          />
+        </Box>
+      </Paper>
+    </Container>
+  );
+}
