@@ -1,6 +1,8 @@
+// React Router component to create links between pages
 import { AppBar, Toolbar, Typography, Button, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
+// Main Navbar component that shows title and links to settings, login, register
 export default function Navbar({ showLogin }) {
   return (
     <AppBar position="static">

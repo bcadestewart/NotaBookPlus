@@ -66,4 +66,3 @@ export default function NoteViewer({ note, onUpdate, onDelete }) {
   );
 };
 
-export default NoteViewer;

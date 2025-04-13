@@ -1,4 +1,4 @@
-// (Start of File)
+// Core react imports and libraries
 import { useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -19,20 +19,25 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
+//Main Home component handling note editing, AI features, recording, and export
 export default function Home() {
+  // Notes state
   const [notes, setNotes] = useState([]);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
   const [editorContent, setEditorContent] = useState("");
+  // Dark theme
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
+  // Refs for recording and file input
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const fileInputRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  useEffect(() => {
+// Saved note storage
+useEffect(() => {
     const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
     setNotes(savedNotes);
     if (savedNotes.length > 0) {
@@ -44,11 +49,13 @@ export default function Home() {
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
 
+  // Sync editor content when selected note changes
   useEffect(() => {
     const note = notes.find(note => note.id === selectedNoteId);
     if (note) setEditorContent(note.content);
   }, [selectedNoteId, notes]);
 
+  // Note management
   const createNewNote = () => {
     const newId = Date.now();
     const newNote = { id: newId, title: 'Untitled Note', content: '' };
@@ -119,6 +126,7 @@ export default function Home() {
     }
   };
 
+  // Transcription upload
   const handleTranscriptionUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -139,10 +147,13 @@ export default function Home() {
     }
   };
 
+  // File picker for transcription
   const triggerFilePicker = () => fileInputRef.current.click();
 
+  // Currently selected note
   const selectedNote = notes.find((note) => note.id === selectedNoteId);
 
+  // Quill toolbar module
   const quillModules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
@@ -203,6 +214,7 @@ export default function Home() {
     }
   };
 
+  // Export options (.txt, .pdf, .png, .docx)
   const exportAsTxt = () => {
     if (!selectedNote) return;
     const blob = new Blob([selectedNote.content], { type: "text/plain" });
@@ -254,6 +266,7 @@ export default function Home() {
     );
   };
 
+  // Render UI features
   return (
     <div style={{ display: "flex", width: "100%" }}>
       <Box

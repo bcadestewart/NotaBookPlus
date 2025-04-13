@@ -8,6 +8,7 @@ import {
   Box,
 } from "@mui/material";
 
+// Settings page with user preferences like dark mode
 export default function Settings({ darkMode, setDarkMode }) {
   const handleToggle = () => {
     setDarkMode(!darkMode);
