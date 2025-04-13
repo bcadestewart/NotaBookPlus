@@ -6,6 +6,7 @@ import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph } from "docx";
+import TranscriptionButton from "../components/TranscriptionButton";
 import {
   Box,
   Button,
@@ -306,9 +307,8 @@ useEffect(() => {
       <Box flex={1} display="flex" flexDirection="column">
         <Stack direction="row" spacing={2} sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
           <Button variant="outlined" onClick={handleSummarizeClick}>Summarize</Button>
-          <Button variant="outlined" onClick={triggerFilePicker}>Transcribe</Button>
-          <input ref={fileInputRef} type="file" accept="audio/*" onChange={handleTranscriptionUpload} style={{ display: 'none' }} />
-        </Stack>
+          <TranscriptionButton onTranscription={(text) => handleUpdateNote(selectedNoteId, text)} />
+          </Stack>
 
         {selectedNote && (
           <Box p={2}>
