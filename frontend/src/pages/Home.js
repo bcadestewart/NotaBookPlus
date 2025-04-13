@@ -1,3 +1,4 @@
+// (Start of File)
 import { useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -22,6 +23,7 @@ import axios from "axios";
 export default function Home() {
   const [notes, setNotes] = useState([]);
   const [selectedNoteId, setSelectedNoteId] = useState(null);
+  const [editorContent, setEditorContent] = useState("");
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
@@ -42,14 +44,27 @@ export default function Home() {
     localStorage.setItem("notes", JSON.stringify(notes));
   }, [notes]);
 
+  useEffect(() => {
+    const note = notes.find(note => note.id === selectedNoteId);
+    if (note) setEditorContent(note.content);
+  }, [selectedNoteId, notes]);
+
   const createNewNote = () => {
-    const newNote = {
-      id: Date.now(),
-      title: "Untitled Note",
-      content: "",
-    };
-    setNotes((prev) => [...prev, newNote]);
-    setSelectedNoteId(newNote.id);
+    const newId = Date.now();
+    const newNote = { id: newId, title: 'Untitled Note', content: '' };
+
+    const updatedNotes = notes.map(note =>
+      note.id === selectedNoteId ? { ...note, content: editorContent } : note
+    );
+
+    const newNotes = [...updatedNotes, newNote];
+
+    setNotes(newNotes);
+    setSelectedNoteId(newId);
+
+    setTimeout(() => {
+      setEditorContent('');
+    }, 0);
   };
 
   const handleNoteSelect = (id) => setSelectedNoteId(id);
@@ -175,12 +190,10 @@ export default function Home() {
   const exportAsPDF = () => {
     if (!selectedNote) return;
     const editorContent = document.querySelector(".ql-editor");
-  
     if (!editorContent) {
       alert("Editor not found for PDF export.");
       return;
     }
-  
     const opt = {
       margin: 0.5,
       filename: `${selectedNote.title || "note"}.pdf`,
@@ -188,10 +201,8 @@ export default function Home() {
       html2canvas: { scale: 2 },
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
-  
     html2pdf().from(editorContent).set(opt).save();
   };
-  
 
   const exportAsPNG = () => {
     if (!selectedNote) return;
@@ -200,7 +211,6 @@ export default function Home() {
       alert("Editor not found");
       return;
     }
-  
     html2canvas(editorElement, { scale: 2 }).then((canvas) => {
       canvas.toBlob((blob) => {
         if (blob) {
@@ -211,16 +221,11 @@ export default function Home() {
       });
     });
   };
-  
 
   const exportAsDOCX = () => {
     if (!selectedNote) return;
     const doc = new Document({
-      sections: [
-        {
-          children: [new Paragraph(selectedNote.content)],
-        },
-      ],
+      sections: [{ children: [new Paragraph(selectedNote.content)] }],
     });
     Packer.toBlob(doc).then((blob) =>
       saveAs(blob, `${selectedNote.title || "note"}.docx`)
@@ -241,9 +246,7 @@ export default function Home() {
           borderRight: `1px solid ${theme.palette.divider}`,
         }}
       >
-        <Typography variant="h6" gutterBottom>
-          Your Notes
-        </Typography>
+        <Typography variant="h6" gutterBottom>Your Notes</Typography>
         <Button variant="contained" fullWidth onClick={createNewNote} sx={{ mb: 2 }}>
           + New Note
         </Button>
@@ -276,8 +279,11 @@ export default function Home() {
             <div className="editor-container">
               <ReactQuill
                 theme="snow"
-                value={selectedNote.content || ""}
-                onChange={(value) => handleUpdateNote(selectedNote.id, value)}
+                value={editorContent}
+                onChange={(value) => {
+                  setEditorContent(value);
+                  handleUpdateNote(selectedNote.id, value);
+                }}
                 modules={quillModules}
               />
             </div>
@@ -308,6 +314,7 @@ export default function Home() {
                 Stop
               </Button>
             </Stack>
+
           </Box>
         )}
       </Box>
