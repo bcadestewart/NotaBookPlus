@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   Box,
   Button,
@@ -14,12 +13,6 @@ export default function Sidebar({ notes, onSelectNote, onAddNote }) {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
-=======
-import React from 'react';
-
-// Sidebar component displays a vertical panel with a list of all notes and a button to create new ones.
-const Sidebar = ({ notes, onSelectNote, onAddNote }) => {
->>>>>>> eac85b63cfea7d8ad41b54d8b625795cc6bb143f
   return (
     <Box
       sx={{
