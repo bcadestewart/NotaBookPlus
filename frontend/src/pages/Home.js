@@ -6,7 +6,6 @@ import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
 import { saveAs } from "file-saver";
 import { Document, Packer, Paragraph } from "docx";
-import TranscriptionButton from "../components/TranscriptionButton";
 import {
   Box,
   Button,
@@ -29,6 +28,7 @@ export default function Home() {
 
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+  const fileInputRef = useRef(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -118,6 +118,28 @@ export default function Home() {
       alert("Error summarizing.");
     }
   };
+
+  const handleTranscriptionUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await axios.post('http://localhost:8000/transcribe', formData);
+      const text = res.data?.text;
+      if (text) {
+        setEditorContent(prev => `${prev}\n\n${text}`);
+        setNotes(prev =>
+          prev.map(note => note.id === selectedNoteId ? { ...note, content: `${editorContent}\n\n${text}` } : note)
+        );
+      } else alert('No transcription result.');
+    } catch (err) {
+      console.error('Transcription error:', err);
+      alert('Error transcribing.');
+    }
+  };
+
+  const triggerFilePicker = () => fileInputRef.current.click();
 
   const selectedNote = notes.find((note) => note.id === selectedNoteId);
 
@@ -271,7 +293,8 @@ export default function Home() {
       <Box flex={1} display="flex" flexDirection="column">
         <Stack direction="row" spacing={2} sx={{ p: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
           <Button variant="outlined" onClick={handleSummarizeClick}>Summarize</Button>
-          <TranscriptionButton onTranscribe={(text) => handleUpdateNote(selectedNoteId, text)} />
+          <Button variant="outlined" onClick={triggerFilePicker}>Transcribe</Button>
+          <input ref={fileInputRef} type="file" accept="audio/*" onChange={handleTranscriptionUpload} style={{ display: 'none' }} />
         </Stack>
 
         {selectedNote && (
