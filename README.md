@@ -51,12 +51,17 @@ ffmpeg -version
 
 ## 🧪 Backend Setup (FastAPI)
 
-1. **Create virtual environment**
+1. **Open ai-backend folder**
+   ```bash
+   cd ai-backend
+   ```
+
+2. **Create virtual environment**
    ```bash
    python3.10 -m venv venv
    ```
 
-2. **Activate the venv**
+3. **Activate the venv**
    - Windows:
      ```bash
      venv\Scripts\activate
@@ -66,14 +71,13 @@ ffmpeg -version
      source venv/bin/activate
      ```
 
-3. **Install dependencies**
+4. **Install dependencies**
    ```bash
-   pip install -r ai-backend/requirements.txt
+   pip install -r requirements.txt
    ```
 
-4. **Run the server**
+5. **Run the server**
    ```bash
-   cd ai-backend
    uvicorn main:app --reload
    ```
 
